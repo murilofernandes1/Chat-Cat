@@ -5,19 +5,23 @@ using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
-public class GoToClickPosition : MonoBehaviour
+public class ClickToMove : MonoBehaviour
 {
     public float speed = 5f; // Velocidade de movimento
     private Rigidbody2D rigidBody;
-    private Camera mainCamera; // ReferÃªncia Ã  cÃ¢mera principal
+    private Camera mainCamera; // Referência à câmera principal
     private bool isMoving = false;
     private Vector2 targetPosition;
     private Tilemap tilemap;
 
+    private Vector3 targetPosition;
+    private bool isMoving = false;
+    private Rigidbody2D rb;
+
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody2D>(); // ObtÃ©m o componente NavMeshAgent
-        mainCamera = Camera.main; // ObtÃ©m a cÃ¢mera principal
+        rigidBody = GetComponent<Rigidbody2D>(); // Obtém o componente NavMeshAgent
+        mainCamera = Camera.main; // Obtém a câmera principal
         targetPosition = transform.position;
         tilemap = GetComponentInParent<Grid>().GetComponentInChildren<Tilemap>();
 
@@ -48,7 +52,7 @@ public class GoToClickPosition : MonoBehaviour
     {
         if (!isMoving)
         {
-            Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(mousePos.Get<Vector2>()); // Cria um raio da posiÃ§Ã£o do mouse
+            Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(mousePos.Get<Vector2>()); // Cria um raio da posição do mouse
             mouseWorldPos.y = mouseWorldPos.y + 0.5f;
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.down);
             if(hit.collider != null)
