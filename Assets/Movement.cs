@@ -10,6 +10,7 @@ public class GoToClickPosition : MonoBehaviour
     {
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>(); // Obtém o componente NavMeshAgent
         mainCamera = Camera.main; // Obtém a câmera principal
+        print(agent.gameObject.name);
     }
 
     void Update()
