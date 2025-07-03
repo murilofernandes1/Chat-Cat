@@ -10,13 +10,9 @@ public class ClickToMove : MonoBehaviour
     public float speed = 5f; // Velocidade de movimento
     private Rigidbody2D rigidBody;
     private Camera mainCamera; // Referência à câmera principal
-    private bool isMoving = false;
-    private Vector2 targetPosition;
     private Tilemap tilemap;
-
     private Vector3 targetPosition;
     private bool isMoving = false;
-    private Rigidbody2D rb;
 
     void Start()
     {
@@ -53,7 +49,6 @@ public class ClickToMove : MonoBehaviour
         if (!isMoving)
         {
             Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(mousePos.Get<Vector2>()); // Cria um raio da posição do mouse
-            mouseWorldPos.y = mouseWorldPos.y + 0.5f;
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.down);
             if(hit.collider != null)
             {
