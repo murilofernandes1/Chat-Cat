@@ -1,35 +1,46 @@
 using UnityEngine;
 
-public class GoToClickPosition : MonoBehaviour
+public class ClickToMove : MonoBehaviour
 {
-    public float speed = 5f; // Velocidade de movimento
-    private UnityEngine.AI.NavMeshAgent agent; // Componente do sistema de navegação
-    private Camera mainCamera; // Referência à câmera principal
+    public float moveSpeed = 5f;
+
+    private Vector3 targetPosition;
+    private bool isMoving = false;
+    private Rigidbody2D rb;
 
     void Start()
     {
-        agent = GetComponent<UnityEngine.AI.NavMeshAgent>(); // Obtém o componente NavMeshAgent
-        mainCamera = Camera.main; // Obtém a câmera principal
+        rb = GetComponent<Rigidbody2D>();
+        targetPosition = transform.position;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // Verifica se o botão esquerdo do mouse foi pressionado
+        // Detecta clique do mouse
+        if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition); // Cria um raio da posição do mouse
-            RaycastHit hit;
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPos.z = transform.position.z; // Evita problemas de profundidade
+            targetPosition = mouseWorldPos;
+            isMoving = true;
+        }
+    }
 
-            if (Physics.Raycast(ray, out hit)) // Verifica se o raio colidiu com algo
+    void FixedUpdate()
+    {
+        if (isMoving)
+        {
+            Vector2 currentPosition = rb.position;
+            Vector2 direction = ((Vector2)targetPosition - currentPosition).normalized;
+            Vector2 newPosition = Vector2.MoveTowards(currentPosition, targetPosition, moveSpeed * Time.fixedDeltaTime);
+
+            rb.MovePosition(newPosition);
+
+            // Chegou no destino?
+            if (Vector2.Distance(newPosition, targetPosition) < 0.05f)
             {
-                if (agent != null)
-                {
-                    agent.SetDestination(hit.point); // Move o personagem para o ponto de colisão
-                }
-                else
-                {
-                    // Sem NavMeshAgent, mova diretamente
-                    transform.position = Vector3.MoveTowards(transform.position, hit.point, speed * Time.deltaTime);
-                }
+                isMoving = false;
+                rb.linearVelocity = Vector2.zero;
             }
         }
     }
