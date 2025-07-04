@@ -2,15 +2,15 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class ClickToMove : MonoBehaviour
 {
     public float speed = 5f; // Velocidade de movimento
-    private Rigidbody2D rigidBody;
-    private Camera mainCamera; // Referência à câmera principal
-    private Tilemap tilemap;
+    public Rigidbody2D rigidBody;
+    public Camera mainCamera; // Referência à câmera principal
+    public Tilemap floor;
     private Vector3 targetPosition;
     private bool isMoving = false;
 
@@ -19,7 +19,7 @@ public class ClickToMove : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>(); // Obtém o componente NavMeshAgent
         mainCamera = Camera.main; // Obtém a câmera principal
         targetPosition = transform.position;
-        tilemap = GetComponentInParent<Grid>().GetComponentInChildren<Tilemap>();
+        floor = GetComponentInParent<Grid>().GetComponentInChildren<Tilemap>();
 
     }
 
@@ -34,7 +34,7 @@ public class ClickToMove : MonoBehaviour
             rigidBody.MovePosition(newPosition);
 
             print(Vector2.Distance(newPosition, currentPosition));
-            if (Vector2.Distance(newPosition, currentPosition) < 0.05f)
+            if (Vector2.Distance(newPosition, currentPosition) < 0.1f)
             {
                 isMoving = false;
                 rigidBody.linearVelocity = Vector2.zero;
@@ -52,7 +52,7 @@ public class ClickToMove : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.down);
             if(hit.collider != null)
             {
-                Vector3 vector3Int = tilemap.CellToWorld(tilemap.WorldToCell(hit.point));
+                Vector3 vector3Int = floor.CellToWorld(floor.WorldToCell(hit.point));
                 mouseWorldPos = new Vector2(vector3Int.x, vector3Int.y);
                 targetPosition = mouseWorldPos;
                 isMoving = true;
